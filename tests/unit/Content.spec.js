@@ -57,6 +57,11 @@ describe('Content', () => {
       expect(wrapper.vm.users[1].email).toMatch('Shanna@melissa.tv')
     })
 
+    it('sets a success banner', () => {
+      expect(wrapper.vm.message).toMatch('SUCCESS! Loaded USER data!')
+      expect(wrapper.vm.messageStatus).toMatch('Success')
+    })
+
     describe('#createUser', () => {
       it('adds the user to users', () => {
         const user = {

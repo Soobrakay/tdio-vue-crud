@@ -1,5 +1,8 @@
 <template>
   <div class="content-container">
+    <app-banner :message="message" :status="messageStatus"
+      @clear-banner="clearMessage">
+    </app-banner>
     <app-list-users :users="users" v-if="showUsers"></app-list-users>
     <app-add-user @create-user="createUser"></app-add-user>
     <button @click="deleteListOfUsers">Delete the List of Users!</button>
@@ -8,6 +11,7 @@
 
 <script>
 import AddUser from '@/components/AddUser.vue'
+import Banner from '@/components/Banner.vue'
 import ListUsers from '@/components/ListUsers.vue'
 import axios from 'axios'
 
@@ -15,16 +19,23 @@ export default {
   name: 'Content',
   components: {
     'app-add-user': AddUser,
+    'app-banner': Banner,
     'app-list-users': ListUsers
   },
   data () {
     return {
       // {id: integer, name: string, username: string, email: string}
       users: [],
-      showUsers: true
+      showUsers: true,
+      message: '',
+      messageStatus: 'Info'
     }
   },
   methods: {
+    clearMessage () {
+      this.message = ''
+      this.messageType = 'Info'
+    },
     createUser (user) {
       const newUser = {
         id: this.users.length + 1,
@@ -49,6 +60,8 @@ export default {
           return user
         })
         this.users = mountedUsers
+        this.message = 'SUCCESS! Loaded USER data!'
+        this.messageStatus = 'Success'
       })
       .catch((error) => {
         console.log(error.message)
