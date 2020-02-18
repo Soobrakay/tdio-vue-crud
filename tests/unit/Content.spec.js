@@ -3,6 +3,8 @@ import Content from '@/components/Content.vue'
 import axios from 'axios'
 
 jest.mock('axios')
+// mock the console log to minimize test noise
+global.console.log = jest.fn()
 
 let wrapper = null
 
@@ -90,6 +92,15 @@ describe('Content', () => {
 
     it('loads no user data', () => {
       expect(wrapper.vm.users.length).toEqual(0)
+    })
+
+    it('logs the error', () => {
+      expect(global.console.log).toHaveBeenCalledWith('BAD REQUEST')
+    })
+
+    it('sets an error banner', () => {
+      expect(wrapper.vm.message).toMatch('ERROR! Unable to load USER data!')
+      expect(wrapper.vm.messageStatus).toMatch('Error')
     })
   })
 })

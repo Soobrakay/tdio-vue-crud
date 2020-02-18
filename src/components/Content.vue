@@ -51,8 +51,9 @@ export default {
         this.users = mountedUsers
       })
       .catch((error) => {
-        console.log(error)
-        this.errorMessage = 'Error! Unable to load USER data!'
+        console.log(error.message)
+        this.message = 'ERROR! Unable to load USER data!'
+        this.messageStatus = 'Error'
       })
       .finally((response) => {
         console.log('User GET Finished!')
