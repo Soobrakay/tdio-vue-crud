@@ -32,8 +32,9 @@ describe('Content', () => {
           }
         ]
       }
-      axios.get.mockResolvedValue(responseGet)
 
+      // noinspection JSCheckFunctionSignatures
+      axios.get.mockResolvedValue(responseGet)
       wrapper = shallowMount(Content)
     })
 
@@ -63,18 +64,63 @@ describe('Content', () => {
     })
 
     describe('#createUser', () => {
-      it('adds the user to users', () => {
+      it('saves the new user data on successful post', () => {
+        const responsePost = {
+          data: [
+            {
+              id: 3,
+              name: 'Patrick',
+              username: 'patrick123',
+              email: 'patrick@email.com'
+            }
+          ]
+        }
+        // noinspection JSCheckFunctionSignatures
+        axios.post.mockResolvedValue(responsePost)
+
         const user = {
-          name: 'Name', username: 'User Name', email: 'email@gmail.com'
+          id: 3,
+          name: 'Name',
+          username: 'User Name',
+          email: 'email@gmail.com',
+          editing: false
         }
         // act
         wrapper.vm.createUser(user)
-        const lastUser = wrapper.vm.users[wrapper.vm.users.length - 1]
+        expect(axios.post).toHaveBeenCalledTimes(1)
+        expect(axios.post)
+          .toBeCalledWith('https://jsonplaceholder.typicode.com/users', user)
 
-        expect(lastUser.name).toEqual(user.name)
-        expect(lastUser.username).toEqual(user.username)
-        expect(lastUser.email).toEqual(user.email)
-        expect(lastUser.id).toEqual(wrapper.vm.users.length)
+        wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.vm.users.length).toEqual(3)
+          expect(wrapper.vm.messageStatus).toMatch('Success')
+          expect(wrapper.vm.message).toMatch('SUCCESS! User data was saved!')
+        })
+      })
+
+      it('does not save new user data on failed post', () => {
+        // noinspection JSCheckFunctionSignatures
+        axios.post.mockRejectedValue(new Error('BAD CREATE'))
+
+        const user = {
+          id: 3,
+          name: 'Name',
+          username: 'User Name',
+          email: 'email@gmail.com',
+          editing: false
+        }
+        // act
+        wrapper.vm.createUser(user)
+        expect(axios.post).toHaveBeenCalledTimes(1)
+        expect(axios.post)
+          .toBeCalledWith('https://jsonplaceholder.typicode.com/users', user)
+
+        wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.vm.users.length).toEqual(2)
+          expect(wrapper.vm.messageStatus).toMatch('Error')
+          expect(wrapper.vm.message).toMatch('ERROR! Unable to save user data!')
+          expect(global.console.log).toHaveBeenCalledWith('BAD CREATE')
+        })
       })
     })
   })
