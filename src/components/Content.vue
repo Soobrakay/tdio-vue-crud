@@ -34,16 +34,30 @@ export default {
   methods: {
     clearMessage () {
       this.message = ''
-      this.messageType = 'Info'
+      this.messageStatus = 'Info'
     },
     createUser (user) {
       const newUser = {
         id: this.users.length + 1,
         name: user.name,
         username: user.username,
-        email: user.email
+        email: user.email,
+        editing: false
       }
-      this.users.push(newUser)
+      axios.post('https://jsonplaceholder.typicode.com/users', newUser)
+        .then((response) => {
+          this.message = 'SUCCESS! User data was saved!'
+          this.messageStatus = 'Success'
+          this.users.push(newUser)
+        })
+        .catch((error) => {
+          this.messageStatus = 'Error'
+          this.message = 'ERROR! Unable to save user data!'
+          console.log(error.message)
+        })
+        .finally((response) => {
+          console.log('User POST Finished!')
+        })
     },
     deleteListOfUsers () {
       this.showUsers = false
@@ -55,11 +69,10 @@ export default {
         console.log('Received response:')
         console.log(response)
 
-        const mountedUsers = response.data.map((user) => {
+        this.users = response.data.map((user) => {
           user.editing = false
           return user
         })
-        this.users = mountedUsers
         this.message = 'SUCCESS! Loaded USER data!'
         this.messageStatus = 'Success'
       })
