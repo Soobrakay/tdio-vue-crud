@@ -63,6 +63,22 @@ describe('Content', () => {
       expect(wrapper.vm.messageStatus).toMatch('Success')
     })
 
+    describe('#editUser', () => {
+      it('sets the user to editing', () => {
+        wrapper.vm.users[0].editing = false
+        wrapper.vm.editUser(wrapper.vm.users[0])
+        expect(wrapper.vm.users[0].editing).toBe(true)
+      })
+    })
+
+    describe('#cancelEditUser', () => {
+      it('disables editing for the user', () => {
+        wrapper.vm.users[0].editing = true
+        wrapper.vm.cancelEditUser(wrapper.vm.users[0])
+        expect(wrapper.vm.users[0].editing).toBe(false)
+      })
+    })
+
     describe('#createUser', () => {
       it('saves the new user data on successful post', () => {
         const responsePost = {
@@ -120,6 +136,127 @@ describe('Content', () => {
           expect(wrapper.vm.messageStatus).toMatch('Error')
           expect(wrapper.vm.message).toMatch('ERROR! Unable to save user data!')
           expect(global.console.log).toHaveBeenCalledWith('BAD CREATE')
+        })
+      })
+
+      describe('#deleteUser', () => {
+        it('deletes the user data on successful http delete', () => {
+          const responseDelete = { data: [{ id: 2 }] }
+          axios.delete.mockResolvedValue(responseDelete)
+
+          const user = {
+            id: 2,
+            name: 'Ervin Howell',
+            username: 'Antonette',
+            email: 'Shanna@melissa.tv'
+          }
+
+          wrapper.vm.deleteUser(user)
+
+          expect(axios.delete).toHaveBeenCalledTimes(1)
+          expect(axios.delete)
+            .toBeCalledWith('https://jsonplaceholder.typicode.com/users/2')
+
+          wrapper.vm.$nextTick().then(() => {
+            expect(wrapper.vm.users.length).toEqual(1)
+            expect(wrapper.vm.messageStatus).toMatch('Success')
+            expect(wrapper.vm.message).toMatch('SUCCESS! User #2 was deleted!')
+          })
+        })
+
+        it('does not delete user data on failed http delete', () => {
+          axios.delete.mockRejectedValue(new Error('BAD DELETE'))
+          const user = {
+            id: 2,
+            name: 'Ervin Howell',
+            username: 'Antonette',
+            email: 'Shanna@melissa.tv'
+          }
+
+          wrapper.vm.deleteUser(user)
+
+          expect(axios.delete).toHaveBeenCalledTimes(1)
+          expect(axios.delete)
+            .toBeCalledWith('https://jsonplaceholder.typicode.com/users/2')
+
+          wrapper.vm.$nextTick().then(() => {
+            expect(wrapper.vm.users.length).toEqual(2)
+            expect(wrapper.vm.messageStatus).toMatch('Error')
+            expect(wrapper.vm.message)
+              .toMatch('ERROR! Unable to delete user #2')
+            expect(global.console.log).toHaveBeenCalledWith('BAD DELETE')
+          })
+        })
+      })
+
+      describe('#updateUser', () => {
+        it('updates the user on successful put', () => {
+          const responsePut = {
+            data: [{
+              id: 1,
+              name: 'Patrick',
+              username: 'patrick456',
+              email: 'patrick@email.com'
+            }]
+          }
+          axios.put.mockResolvedValue(responsePut)
+
+          const user = {
+            id: 1,
+            name: 'Patrick',
+            username: 'patrick456',
+            email: 'patrick@email.com',
+            index: 0
+          }
+
+          const putUser = {
+            name: user.name, username: user.username, email: user.email
+          }
+
+          wrapper.vm.updateUser(user)
+
+          expect(axios.put).toHaveBeenCalledTimes(1)
+          expect(axios.put).toBeCalledWith(
+            'https://jsonplaceholder.typicode.com/users/1', putUser
+          )
+
+          wrapper.vm.$nextTick().then(function () {
+            expect(wrapper.vm.users.length).toEqual(2)
+            expect(wrapper.vm.messageStatus).toMatch('Success')
+            expect(wrapper.vm.message)
+              .toMatch('SUCCESS! User #1 was updated!')
+          })
+        })
+
+        it('does not update the user on failed put', () => {
+          axios.put.mockRejectedValue(new Error('BAD PUT'))
+
+          const user = {
+            id: 1,
+            name: 'Patrick',
+            username: 'patrick456',
+            email: 'patrick@email.com',
+            index: 0
+          }
+          const putUser = {
+            name: user.name, username: user.username, email: user.email
+          }
+
+          wrapper.vm.updateUser(user)
+
+          expect(axios.put).toHaveBeenCalledTimes(1)
+          expect(axios.put).toBeCalledWith(
+            'https://jsonplaceholder.typicode.com/users/1', putUser
+          )
+
+          wrapper.vm.$nextTick().then(function () {
+            expect(wrapper.vm.users.length).toEqual(2)
+            expect(wrapper.vm.messageStatus).toMatch('Error')
+            expect(wrapper.vm.message)
+              .toMatch('ERROR! Unable to update user #1!')
+
+            expect(global.console.log).toHaveBeenCalledWith('BAD PUT')
+          })
         })
       })
     })

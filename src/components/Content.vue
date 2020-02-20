@@ -3,9 +3,11 @@
     <app-banner :message="message" :status="messageStatus"
       @clear-banner="clearMessage">
     </app-banner>
-    <app-list-users :users="users" v-if="showUsers"></app-list-users>
+    <app-list-users :users="users" @delete-user="deleteUser"
+      @edit-user="editUser" @cancel-edit-user="cancelEditUser"
+      @update-user="updateUser">
+    </app-list-users>
     <app-add-user @create-user="createUser"></app-add-user>
-    <button @click="deleteListOfUsers">Delete the List of Users!</button>
   </div>
 </template>
 
@@ -26,7 +28,6 @@ export default {
     return {
       // {id: integer, name: string, username: string, email: string}
       users: [],
-      showUsers: true,
       message: '',
       messageStatus: 'Info'
     }
@@ -59,8 +60,57 @@ export default {
           console.log('User POST Finished!')
         })
     },
-    deleteListOfUsers () {
-      this.showUsers = false
+    deleteUser (user) {
+      axios.delete(`https://jsonplaceholder.typicode.com/users/${user.id}`)
+        .then((response) => {
+          this.messageStatus = 'Success'
+          this.message = `SUCCESS! User #${user.id} was deleted!`
+          this.users.splice(this.users.indexOf(user), 1)
+        })
+        .catch((error) => {
+          this.messageStatus = 'Error'
+          this.message = `ERROR! Unable to delete user #${user.id}!`
+          console.log(error.message)
+        })
+        .finally((response) => {
+          console.log('DELETE finished!')
+        })
+    },
+    editUser (user) {
+      console.log(`editUser(${user})`)
+      console.log('editUser-pre-forEach')
+      this.users.forEach(function (arrayUser) { arrayUser.editing = false })
+      this.users[this.users.indexOf(user)].editing = true
+    },
+    cancelEditUser (user) {
+      console.log(`cancelEditUser(${user})`)
+      this.users[this.users.indexOf(user)].editing = false
+    },
+    updateUser (user) {
+      const putUser = {
+        name: user.name,
+        username: user.username,
+        email: user.email
+      }
+      axios.put(
+        `https://jsonplaceholder.typicode.com/users/${user.id}`, putUser
+      ).then((response) => {
+        this.messageStatus = 'Success'
+        this.message = `SUCCESS! User #${user.id} was updated!`
+
+        this.users[user.index].name = user.name
+        this.users[user.index].username = user.username
+        this.users[user.index].email = user.email
+        this.users[user.index].editing = false
+      }).catch((error) => {
+        this.messageStatus = 'Error'
+        this.message = `ERROR! Unable to update user #${user.id}!`
+        console.log(error.message)
+
+        this.users[user.index].editing = false
+      }).finally((response) => {
+        console.log('PUT finished!')
+      })
     }
   },
   created () {
@@ -91,6 +141,6 @@ export default {
 <style scoped>
 div {
   margin: auto;
-  padding: 4em;
+  padding: 4px;
 }
 </style>
