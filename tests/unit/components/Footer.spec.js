@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import Footer from '@/components/Footer.vue'
+import Footer from '../../../src/components/Footer.vue'
 
 describe('Footer', () => {
   it('renders message when created', () => {

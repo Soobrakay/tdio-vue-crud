@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import Header from '@/components/Header.vue'
+import Header from '../../../src/components/Header.vue'
 
 describe('Header', () => {
   it('renders message when created', () => {

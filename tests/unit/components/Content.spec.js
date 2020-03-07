@@ -1,6 +1,6 @@
-import { shallowMount } from '@vue/test-utils'
-import Content from '@/components/Content.vue'
 import axios from 'axios'
+import { shallowMount } from '@vue/test-utils'
+import Content from '../../../src/components/Content.vue'
 
 jest.mock('axios')
 // mock the console log to minimize test noise

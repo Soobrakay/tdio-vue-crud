@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import Navigation from '@/components/Navigation.vue'
+import Navigation from '../../../src/components/Navigation.vue'
 
 describe('Navigation', () => {
   it('renders navigation links when created', () => {

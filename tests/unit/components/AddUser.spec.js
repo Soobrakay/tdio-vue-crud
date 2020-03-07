@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import AddUser from '@/components/AddUser.vue'
+import AddUser from '../../../src/components/AddUser.vue'
 
 let wrapper = null
 

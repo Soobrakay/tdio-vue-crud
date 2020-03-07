@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import ListUsers from '@/components/ListUsers.vue'
+import ListUsers from '../../../src/components/ListUsers.vue'
 
 describe('ListUsers', () => {
   let wrapper = null
