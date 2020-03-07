@@ -3,8 +3,6 @@ import { shallowMount } from '@vue/test-utils'
 import Content from '../../../src/components/Content.vue'
 
 jest.mock('axios')
-// mock the console log to minimize test noise
-global.console.log = jest.fn()
 
 let wrapper = null
 
@@ -135,7 +133,6 @@ describe('Content', () => {
           expect(wrapper.vm.users.length).toEqual(2)
           expect(wrapper.vm.messageStatus).toMatch('Error')
           expect(wrapper.vm.message).toMatch('ERROR! Unable to save user data!')
-          expect(global.console.log).toHaveBeenCalledWith('BAD CREATE')
         })
       })
 
@@ -184,7 +181,6 @@ describe('Content', () => {
             expect(wrapper.vm.messageStatus).toMatch('Error')
             expect(wrapper.vm.message)
               .toMatch('ERROR! Unable to delete user #2')
-            expect(global.console.log).toHaveBeenCalledWith('BAD DELETE')
           })
         })
       })
@@ -254,8 +250,6 @@ describe('Content', () => {
             expect(wrapper.vm.messageStatus).toMatch('Error')
             expect(wrapper.vm.message)
               .toMatch('ERROR! Unable to update user #1!')
-
-            expect(global.console.log).toHaveBeenCalledWith('BAD PUT')
           })
         })
       })
@@ -280,10 +274,6 @@ describe('Content', () => {
 
     it('loads no user data', () => {
       expect(wrapper.vm.users.length).toEqual(0)
-    })
-
-    it('logs the error', () => {
-      expect(global.console.log).toHaveBeenCalledWith('BAD REQUEST')
     })
 
     it('sets an error banner', () => {
