@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import AddUser from '@/components/AddUser.vue'
-import Banner from '@/components/Banner.vue'
-import ListUsers from '@/components/ListUsers.vue'
+import AddUser from ',/AddUser.vue'
+import Banner from ',/Banner.vue'
+import ListUsers from ',/ListUsers.vue'
 import axios from 'axios'
 
 export default {

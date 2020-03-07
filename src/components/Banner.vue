@@ -8,18 +8,14 @@
 <script>
 export default {
   name: 'Banner',
-  props: {
-    message: String,
-    status: String
-  },
   methods: {
     clearBannerMessage () {
-      this.$emit('clear-banner')
+      this.$store.dispatch('setBanner', { message: '', status: 'Info' })
     }
   },
   computed: {
     color () {
-      switch (this.status) {
+      switch (this.$store.getters.getMessageStatus) {
         case 'Error':
           return 'red'
         case 'Success':
@@ -27,6 +23,9 @@ export default {
         default:
           return 'blue'
       }
+    },
+    message () {
+      return this.$store.getters.getMessage
     }
   }
 }
