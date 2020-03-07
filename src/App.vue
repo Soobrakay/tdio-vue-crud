@@ -1,14 +1,15 @@
 <template>
-  <div class="grid-container">
-    <app-header class="header-title" :title="title"></app-header>
-    <app-navigation class="navigation-links"></app-navigation>
-    <app-content class="data-content"></app-content>
-    <app-footer class="footer" :message="footer"></app-footer>
+  <div id="app">
+    <div class="grid-container">
+      <app-header class="header-title" :title="title"/>
+      <app-navigation class="navigation-links"/>
+      <router-view class="data-content"/>
+      <app-footer class="footer" :message="footer"/>
+    </div>
   </div>
 </template>
 
 <script>
-import Content from './components/Content.vue'
 import Footer from './components/Footer.vue'
 import Header from './components/Header.vue'
 import Navigation from './components/Navigation.vue'
@@ -16,7 +17,6 @@ import Navigation from './components/Navigation.vue'
 export default {
   name: 'App',
   components: {
-    'app-content': Content,
     'app-footer': Footer,
     'app-header': Header,
     'app-navigation': Navigation
@@ -28,6 +28,7 @@ export default {
     }
   }
 }
+
 </script>
 
 <style>

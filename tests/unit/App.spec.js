@@ -1,9 +1,14 @@
-import { shallowMount } from '@vue/test-utils'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
 import App from '../../src/App.vue'
+import VueRouter from 'vue-router'
+
+const localVue = createLocalVue()
+localVue.use(VueRouter)
+const router = new VueRouter()
 
 describe('App', () => {
   it('renders sub-components when created', () => {
-    const wrapper = shallowMount(App)
+    const wrapper = shallowMount(App, { localVue, router })
 
     expect(wrapper.name()).toMatch('App')
     expect(wrapper.findAll('.header-title').exists()).toBeTruthy()
